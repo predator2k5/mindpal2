@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindPal - Register</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container" id="registerPage">
+        <div class="form-container">
+            <div class="image-section">
+                <img src="logo.png" alt="MindPal" class="right-image">
+            </div>
+            <form id="registerForm" class="form" onsubmit="validateRegister(event)">
+                <h2>Register</h2>
+                <input type="text" id="registerName" placeholder="Full Name" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Password" required>
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <button type="submit">Register</button>
+                <p class="switch-text">Already have an account? <a href="signin.html">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function validateRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return;
+            }
+
+            alert(`Welcome ${name}! Your account has been successfully registered.`);
+            window.location.href = 'signin.html';
+        }
+    </script>
+</body>
+</html>

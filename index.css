@@ -1,0 +1,266 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: url('background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #00000000;
+    font-size: 16px;
+}
+
+/* Container for pages */
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    padding: 10px;
+}
+
+/* Hidden Elements */
+.hidden {
+    display: none;
+}
+
+/* Form Container */
+.form-container {
+    background: rgba(0, 0, 0, 0);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0);
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Form Styles */
+.form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #00000000;
+    color: #00000000;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background: #45a04900;
+}
+
+.switch-text {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.switch-text span {
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Image Section */
+.image-section {
+    margin-left: 0.001px;
+}
+
+.right-image {
+    max-width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0);
+}
+
+/* Home Page */
+#homePage {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#homePage h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+#homePage p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #ddd;
+}
+
+#homePage ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#homePage li {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #ddd;
+}
+
+#homePage img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(173, 248, 232, 0.6);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.nav-links {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: rgb(22, 100, 2);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 16px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+    color: #fff;
+    border-radius: 5px;
+}
+
+/* Centered MindPal in Navbar */
+.nav-links .center {
+    flex-grow: 2;
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.nav-links .left, .nav-links .right {
+    display: flex;
+}
+
+/* Content Section for Home Page */
+.content {
+    max-width: 600px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.content h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.content ul {
+    margin: 20px 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.content ul li {
+    margin: 10px 0;
+    padding-left: 10px;
+    text-indent: -10px;
+}
+
+.content ul li:before {
+    content: "✔ ";
+    color: #4caf50;
+    font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 15px;
+    }
+
+    .container {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+    }
+
+    .image-section {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .navbar {
+        padding: 10px;
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .form input, .form button {
+        font-size: 14px;
+    }
+
+    .content {
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    #homePage h1 {
+        font-size: 30px;
+    }
+
+    #homePage p {
+        font-size: 16px;
+    }
+}

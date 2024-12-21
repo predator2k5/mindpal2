@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Sensor Dashboard</title>
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Add Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body 
+         /* Navbar Styles */
+         .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 20px 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;s
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            color: #4CAF50;
+            background: rgba(76, 175, 79, 0.048);
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: red;
+            margin-right: 10px;
+        }
+
+        .status-dot.connected {
+            background: green;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .data-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .data-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .data-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: #1976D2;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        /* Footer Styles */
+        .footer {
+            background: #ffffff3f;
+            padding: 60px 0 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h4 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #4CAF50;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #4CAF50;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #66666652;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.26);
+                flex-direction: column;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .features {
+                padding: 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">MindPal</a>
+        <button class="menu-btn">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="#test">Test</a></li>
+            <li><a href="dashboard.html">Report</a></li>
+            <li><a href="signin.html">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="dashboard">
+        <div class="sidebar">
+            <h2>Multi-Sensor Monitor</h2>
+            <div class="connection-status">
+                <div class="status-dot" id="connectionDot"></div>
+                <span id="connectionStatus">Disconnected</span>
+            </div>
+            <button class="btn" id="connectButton">
+                <i class="fas fa-bluetooth"></i>
+                Connect Device
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>Pulse Rate Data</h3>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Pulse Rate</div>
+                        <div class="data-value" id="pulseRateValue">0</div>
+                    </div>
+                </div>
+                <h3>Pulse Rate Graph</h3>
+                <div class="chart-container">
+                    <canvas id="pulseRateChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>GSR Sensor Data</h3>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Skin Conductance</div>
+                        <div class="data-value" id="gsrValue">0</div>
+                    </div>
+                </div>
+                <h3>GSR Graph</h3>
+                <div class="chart-container">
+                    <canvas id="gsrChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Accelerometer & Magnitude Data</h3>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">X-Axis</div>
+                        <div class="data-value" id="xValue">0.00</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Y-Axis</div>
+                        <div class="data-value" id="yValue">0.00</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Z-Axis</div>
+                        <div class="data-value" id="zValue">0.00</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Magnitude</div>
+                        <div class="data-value" id="magnitudeValue">0.00</div>
+                    </div>
+                </div>
+                <h3>Accelerometer & Magnitude Graph</h3>
+                <div class="chart-container">
+                    <canvas id="accelerationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>IEM KOLKATA</p>
+                <p>Mental Health Mindpal</p>
+                <p>Phone: +1 234 567 890</p>
+                <p>Email: info@mindpal.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#test">Take Test</a>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+            </div>
+            <div class="footer-section">
+                <h4>Mental Health Resources</h4>
+                <p>National Mental Health Helpline</p>
+                <p>24/7 Support: 1234567890</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MindPal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let bluetoothDevice;
+        let pulseRateChart, gsrChart, accelerationChart;
+        const maxDataPoints = 50;
+        const dataHistory = {
+            pulse: Array(maxDataPoints).fill(0),
+            gsr: Array(maxDataPoints).fill(0),
+            x: Array(maxDataPoints).fill(0),
+            y: Array(maxDataPoints).fill(0),
+            z: Array(maxDataPoints).fill(0),
+            magnitude: Array(maxDataPoints).fill(0),
+            labels: Array(maxDataPoints).fill('')
+        };
+
+        // Initialize Charts
+        function initializeCharts() {
+            const pulseCtx = document.getElementById('pulseRateChart').getContext('2d');
+            const gsrCtx = document.getElementById('gsrChart').getContext('2d');
+            const accCtx = document.getElementById('accelerationChart').getContext('2d');
+
+            pulseRateChart = new Chart(pulseCtx, {
+                type: 'line',
+                data: {
+                    labels: dataHistory.labels,
+                    datasets: [{
+                        label: 'Pulse Rate',
+                        data: dataHistory.pulse,
+                        borderColor: '#2196F3',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, suggestedMax: 120 }
+                    }
+                }
+            });
+
+            gsrChart = new Chart(gsrCtx, {
+                type: 'line',
+                data: {
+                    labels: dataHistory.labels,
+                    datasets: [{
+                        label: 'GSR',
+                        data: dataHistory.gsr,
+                        borderColor: '#FF9800',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, suggestedMax: 10 }
+                    }
+                }
+            });
+
+            accelerationChart = new Chart(accCtx, {
+                type: 'line',
+                data: {
+                    labels: dataHistory.labels,
+                    datasets: [
+                        { label: 'X-Axis', data: dataHistory.x, borderColor: '#f44336', tension: 0.4 },
+                        { label: 'Y-Axis', data: dataHistory.y, borderColor: '#4CAF50', tension: 0.4 },
+                        { label: 'Z-Axis', data: dataHistory.z, borderColor: '#2196F3', tension: 0.4 },
+                        { label: 'Magnitude', data: dataHistory.magnitude, borderColor: '#9C27B0', fill: true, tension: 0.4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, suggestedMax: 5 }
+                    }
+                }
+            });
+        }
+
+        // Update all sensor data and graphs
+        function updateData(pulse, gsr, x, y, z, magnitude) {
+            // Update pulse and GSR values
+            document.getElementById('pulseRateValue').textContent = pulse.toFixed(1);
+            document.getElementById('gsrValue').textContent = gsr.toFixed(1);
+            document.getElementById('xValue').textContent = x.toFixed(3);
+            document.getElementById('yValue').textContent = y.toFixed(3);
+            document.getElementById('zValue').textContent = z.toFixed(3);
+            document.getElementById('magnitudeValue').textContent = magnitude.toFixed(3);
+
+            // Update chart data
+            dataHistory.pulse.push(pulse);
+            dataHistory.gsr.push(gsr);
+            dataHistory.x.push(x);
+            dataHistory.y.push(y);
+            dataHistory.z.push(z);
+            dataHistory.magnitude.push(magnitude);
+
+            if (dataHistory.pulse.length > maxDataPoints) {
+                dataHistory.pulse.shift();
+                dataHistory.gsr.shift();
+                dataHistory.x.shift();
+                dataHistory.y.shift();
+                dataHistory.z.shift();
+                dataHistory.magnitude.shift();
+                dataHistory.labels.shift();
+            }
+
+            dataHistory.labels.push(new Date().toLocaleTimeString());
+
+            // Update the charts
+            pulseRateChart.update();
+            gsrChart.update();
+            accelerationChart.update();
+        }
+
+        // Connect button event
+        document.getElementById('connectButton').addEventListener('click', async () => {
+            try {
+                // Assuming Web Bluetooth is used to connect to device
+                bluetoothDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ services: ['heart_rate', 'battery_service', 'accelerometer_service'] }]
+                });
+
+                const server = await bluetoothDevice.gatt.connect();
+                document.getElementById('connectionDot').classList.add('connected');
+                document.getElementById('connectionStatus').textContent = 'Connected';
+                document.getElementById('connectButton').disabled = true;
+                
+                // Listen to characteristics and get data (This is just a placeholder for actual sensor reading)
+                setInterval(() => {
+                    const pulse = Math.random() * 100;
+                    const gsr = Math.random() * 5;
+                    const x = Math.random() * 3;
+                    const y = Math.random() * 3;
+                    const z = Math.random() * 3;
+                    const magnitude = Math.sqrt(x * x + y * y + z * z);
+
+                    updateData(pulse, gsr, x, y, z, magnitude);
+                }, 2000); // Update every 2 seconds
+
+            } catch (error) {
+                alert('Failed to connect: ' + error);
+            }
+        });
+
+        // Initialize charts
+        initializeCharts();
+    </script>
+</body>
+</html>

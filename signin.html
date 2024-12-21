@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindPal - Sign In</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    
+    <div class="container" id="signInPage">
+        <div class="form-container">
+            <div class="image-section">
+                <img src="logo.png" alt="MindPal" class="right-image">
+            </div>
+            <form id="signInForm" class="form" onsubmit="validateSignIn(event)">
+                <h2>Sign In</h2>
+                <input type="email" id="signInEmail" placeholder="Email" required>
+                <input type="password" id="signInPassword" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+                <p class="switch-text">Don't have an account? <a href="signup.html">Register</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function validateSignIn(event) {
+            event.preventDefault();
+            const email = document.getElementById('signInEmail').value;
+            const password = document.getElementById('signInPassword').value;
+
+            if (email === "test@example.com" && password === "password123") {
+                alert("Sign In Successful!");
+                window.location.href = 'index.html';
+            } else {
+                alert("Invalid email or password. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
