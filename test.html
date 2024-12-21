@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHA Stress Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Global Styles */
+        body {
+            background-image: url('background.png'); /* Set your desired background image */
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+         /* Navbar Styles */
+       .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;s
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            color: #4CAF50;
+            background: rgba(76, 175, 79, 0.048);
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Form Styles */
+        form {
+            margin: 80px auto; /* Add margin to account for the navbar */
+            padding: 30px;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            overflow: hidden; /* Prevent overflow */
+        }
+
+        form:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0 15px;
+            background: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border: 1px solid #4CAF50;
+            outline: none;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+       
+         /* Footer Styles */
+         .footer {
+            background: #ffffff3f;
+            padding: 60px 0 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h4 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #666;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #4CAF50;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #4CAF50;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #66666652;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.26);
+                flex-direction: column;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .features {
+                padding: 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">MindPal</a>
+        <button class="menu-btn">☰</button>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="haha.html">Test</a></li>
+            <li><a href="dashboard.html">Report</a></li>
+            <li><a href="signin.html">Logout</a></li> 
+        </ul>
+    </nav>
+
+
+    <form id="stress-form">
+        <h2>Personal Information</h2>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" required min="1" max="120">
+
+        <label for="gender">Gender:</label>
+        <select id="gender" required>
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+ </select>
+
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" required min="1">
+
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" required min="1">
+
+        <label for="pulse-rate">Pulse Rate (bpm):</label>
+        <input type="number" id="pulse-rate" required min="1">
+
+        <label for="skin-conductance">Skin Conductance:</label>
+        <input type="number" id="skin-conductance" step="0.01" required>
+
+        <h2>Stress Assessment Questions</h2>
+        <div class="radio-group">
+            <label>1. How often do you feel stressed?</label>
+            <input type="radio" name="q1" value="0" required> Never
+            <input type="radio" name="q1" value="1"> Rarely
+            <input type="radio" name="q1" value="2"> Sometimes
+            <input type="radio" name="q1" value="3"> Often
+            <input type="radio" name="q1" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>2. How often do you feel anxious?</label>
+            <input type="radio" name="q2" value="0" required> Never
+            <input type="radio" name="q2" value="1"> Rarely
+            <input type="radio" name="q2" value="2"> Sometimes
+            <input type="radio" name="q2" value="3"> Often
+            <input type="radio" name="q2" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>3. How often do you feel overwhelmed?</label>
+            <input type="radio" name="q3" value="0" required> Never
+            <input type="radio" name="q3" value="1"> Rarely
+            <input type="radio" name="q3" value="2"> Sometimes
+            <input type="radio" name="q3" value="3"> Often
+            <input type="radio" name="q3" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>4. How often do you have trouble sleeping due to stress?</label>
+            <input type="radio" name="q4" value="0" required> Never
+            <input type="radio" name="q4" value="1"> Rarely
+            <input type="radio" name="q4" value="2"> Sometimes
+            <input type="radio" name="q4" value="3"> Often
+            <input type="radio" name="q4" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>5. How often do you feel irritable or angry?</label>
+            <input type="radio" name="q5" value="0" required> Never
+            <input type="radio" name="q5" value="1"> Rarely
+            <input type="radio" name="q5" value="2"> Sometimes
+            <input type="radio" name="q5" value="3"> Often
+            <input type="radio" name="q5" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>6. How often do you feel sad or depressed?</label>
+            <input type="radio" name="q6" value="0" required> Never
+            <input type="radio" name="q6" value="1"> Rarely
+            <input type="radio" name="q6" value="2"> Sometimes
+            <input type="radio" name="q6" value="3"> Often
+            <input type="radio" name="q6" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>7. How often do you feel fatigued or low energy?</label>
+            <input type="radio" name="q7" value="0" required> Never
+            <input type="radio" name="q7" value="1"> Rarely
+            <input type="radio" name="q7" value="2"> Sometimes
+            <input type="radio" name="q7" value="3"> Often
+            <input type="radio" name="q7" value="4"> Always
+        </div ```html
+        <div class="radio-group">
+            <label>8. How often do you feel lonely or isolated?</label>
+            <input type="radio" name="q8" value="0" required> Never
+            <input type="radio" name="q8" value="1"> Rarely
+            <input type="radio" name="q8" value="2"> Sometimes
+            <input type="radio" name="q8" value="3"> Often
+            <input type="radio" name="q8" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>9. How often do you find it hard to concentrate?</label>
+            <input type="radio" name="q9" value="0" required> Never
+            <input type="radio" name="q9" value="1"> Rarely
+            <input type="radio" name="q9" value="2"> Sometimes
+            <input type="radio" name="q9" value="3"> Often
+            <input type="radio" name="q9" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>10. How often do you feel overwhelmed by your responsibilities?</label>
+            <input type="radio" name="q10" value="0" required> Never
+            <input type="radio" name="q10" value="1"> Rarely
+            <input type="radio" name="q10" value="2"> Sometimes
+            <input type="radio" name="q10" value="3"> Often
+            <input type="radio" name="q10" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>11. How often do you feel you lack control over your life?</label>
+            <input type="radio" name="q11" value="0" required> Never
+            <input type="radio" name="q11" value="1"> Rarely
+            <input type="radio" name="q11" value="2"> Sometimes
+            <input type="radio" name="q11" value="3"> Often
+            <input type="radio" name="q11" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>12. How often do you feel you are not able to cope with stress?</label>
+            <input type="radio" name="q12" value="0" required> Never
+            <input type="radio" name="q12" value="1"> Rarely
+            <input type="radio" name="q12" value="2"> Sometimes
+            <input type="radio" name="q12" value="3"> Often
+            <input type="radio" name="q12" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>13. How often do you feel you are under pressure to perform?</label>
+            <input type="radio" name="q13" value="0" required> Never
+            <input type="radio" name="q13" value="1"> Rarely
+            <input type="radio" name="q13" value="2"> Sometimes
+            <input type="radio" name="q13" value="3"> Often
+            <input type="radio" name="q13" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>14. How often do you feel you are not supported by others?</label>
+            <input type="radio" name="q14" value="0" required> Never
+            <input type="radio" name="q14" value="1"> Rarely
+            <input type="radio" name="q14" value="2"> Sometimes
+            <input type="radio" name="q14" value="3"> Often
+            <input type="radio" name="q14" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>15. How often do you feel you are not able to relax?</label>
+            <input type="radio" name="q15" value="0" required> Never
+            <input type="radio" name="q15" value="1"> Rarely
+            <input type="radio" name="q15" value="2"> Sometimes
+            <input type="radio" name="q15" value="3"> Often
+            <input type="radio" name="q15" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>16. How often do you feel you are not able to enjoy activities you used to?</label>
+            <input type="radio" name="q16" value="0" required> Never
+            <input type="radio" name="q16" value="1"> Rarely
+            <input type="radio" name="q16" value="2"> Sometimes
+            <input type="radio" name="q16" value="3"> Often
+            <input type="radio" name="q16" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>17. How often do you feel you are not able to express your feelings?</label>
+            <input type="radio" name="q17" value="0" required> Never
+            <input type="radio" name="q17" value="1"> Rarely
+            <input type="radio" name="q17" value="2"> Sometimes
+            <input type="radio" name="q17" value="3"> Often
+            <input type="radio" name="q17" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>18. How often do you feel you are not able to ask for help?</label>
+            <input type="radio" name="q18" value="0" required> Never
+            <input type="radio" name="q18" value="1"> Rarely
+            <input type="radio" name="q18" value="2"> Sometimes
+            <input type="radio" name="q18" value="3"> Often
+            <input type="radio" name="q18" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>19. How often do you feel you are not able to find solutions to your problems?</label>
+            <input type="radio" name="q19" value="0" required> Never
+            <input type="radio" name="q19" value="1"> Rarely
+            <input type="radio" name="q19" value="2"> Sometimes
+            <input type="radio" name="q19" value="3"> Often
+            <input type="radio" name="q19" value="4"> Always
+        </div>
+        <div class="radio-group">
+            <label>20. How often do you feel you are not able to cope with daily challenges?</label>
+            <input type="radio" name="q20" value="0" required> Never
+            <input type="radio" name="q20" value="1"> Rarely
+            <input type="radio" name="q20" value="2"> Sometimes
+            <input type="radio" name="q20" value="3"> Often
+            <input type="radio" name="q20" value="4"> Always
+        </div>
+
+        <button type="submit">Generate Report</button>
+    </form>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>IEM KOLKATA</p>
+                <p>Mental Health Mindpal</p>
+                <p>Phone: +1 234 567 890</p>
+                <p>Email: info@mindpal.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="aboutus.html">About Us</a>
+                <a href="test.html">Take Test</a>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+            </div>
+            <div class="footer-section">
+                <h4>Mental Health Resources</h4>
+                <p>National Mental Health Helpline</p>
+                <p>24/7 Support: 1234567890</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MindPal. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.getElementById("stress-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Collect responses
+            let responses = [];
+            for (let i = 1; i <= 20; i++) {
+                let response = document.querySelector(`input[name="q${i}"]:checked`);
+                if (response) {
+                    responses.push(parseInt(response.value));
+                }
+            }
+
+            // Collect personal and sensor data
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const gender = document.getElementById("gender").value;
+            const weight = document.getElementById("weight").value;
+            const height = document.getElementById("height").value;
+            const pulseRate = parseFloat(document.getElementById("pulse-rate").value);
+            const skinConductance = parseFloat(document.getElementById("skin-conductance").value);
+
+            // Calculate stress score out of 100
+            const stressScore = Math.min(responses.reduce((a, b) => a + b, 0), 100);
+
+            // Determine stress level
+            let stressLevel = "Normal";
+            if (stressScore > 70) {
+                stressLevel = "High Stress";
+            } else if (stressScore > 40) {
+                stressLevel = "Medium Stress";
+            }
+
+            // Suggest essential oils and yoga asanas based on stress level
+            let oilSuggestions = [];
+            let yogaAsanas = [];
+            if (stressLevel === "High Stress") {
+                oilSuggestions = ["Lavender", "Chamomile", "Lemongrass", "Sandalwood"];
+                yogaAsanas = ["Child's Pose", "Corpse Pose", "Cat-Cow Stretch"];
+            } else if (stressLevel === "Medium Stress") {
+                oilSuggestions = ["Bergamot", "Ylang Ylang"];
+                yogaAsanas = ["Seated Forward Bend", "Bridge Pose"];
+            } else {
+                oilSuggestions = ["Peppermint", "Eucalyptus"];
+                yogaAsanas = ["Mountain Pose", "Tree Pose"];
+            }
+
+            // Generate report
+            generatePDF(name, age, gender, weight, height, pulseRate, skinConductance, stressScore, stressLevel, oilSuggestions, yogaAsanas);
+        });
+
+        function generatePDF(name, age, gender, weight, height, pulseRate, skinConductance, stressScore, stressLevel, oilSuggestions, yogaAsanas) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text(`Mental Health Assessment Report`, 20, 20);
+            doc.text(`Name: ${name}`, 20, 30);
+            doc.text(`Age: ${age}`, 20, 40);
+            doc.text(`Gender: ${gender}`, 20, 50);
+            doc.text(`Weight: ${weight} kg`, 20, 60);
+            doc.text(`Height: ${height} cm`, 20, 70);
+            doc.text(`Pulse Rate: ${pulseRate} bpm`, 20, 80);
+            doc.text(`Skin Conductance: ${skinConductance}`, 20, 90);
+            doc.text(`Stress Score: ${stressScore} / 100`, 20, 100);
+            doc.text(`Stress Level: ${stressLevel}`, 20, 110);
+
+            doc.text(`Suggested Essential Oils:`, 20, 120);
+            oilSuggestions.forEach((oil, index) => {
+                doc.text(`${index + 1}. ${oil}`, 20, 130 + index * 10);
+            });
+
+            doc.text(`Suggested Yoga Asanas:`, 20, 170);
+            yogaAsanas.forEach((asana, index) => {
+                doc.text(`${index + 1}. ${asana}`, 20, 180 + index * 10);
+            });
+
+            // Add essential oils and yoga asanas explanation
+            doc.text(`Essential Oil Therapy Recommendations:`, 20, 220);
+            doc.text(`1. Lavender: Best for calming nerves and promoting relaxation.`, 20, 230);
+            doc.text(`2. Chamomile: Excellent for stress relief and sleep improvement.`, 20, 240);
+            doc.text(`3. Lemongrass: Known for uplifting mood and reducing anxiety.`, 20, 250);
+            doc.text(`4. Sandalwood: Ideal for grounding and mental clarity.`, 20, 260);
+            doc.text(`5. Bergamot: Helps in reducing anxiety and improving mood.`, 20, 270);
+            doc.text(`6. Ylang Ylang: Known for its calming effects and stress relief.`, 20, 280);
+            doc.text(`7. Peppermint: Refreshing and invigorating, helps in mental clarity.`, 20, 290);
+            doc.text(`8. Eucalyptus: Great for clearing the mind and promoting relaxation.`, 20, 300);
+
+            doc.text(`Yoga Asana Benefits:`, 20, 320);
+            doc.text(`1. Child's Pose: Calms the mind and relieves stress.`, 20, 330);
+            doc.text(`2. Corpse Pose: Promotes deep relaxation and stress relief.`, 20, 340);
+            doc.text(`3. Cat-Cow Stretch: Helps in relieving tension in the spine.`, 20, 350);
+            doc.text(`4. Seated Forward Bend: Calms the mind and stretches the spine.`, 20, 360);
+            doc.text(`5. Bridge Pose: Opens the heart and relieves stress.`, 20, 370);
+            doc.text(`6. Mountain Pose: Promotes grounding and stability.`, 20, 380);
+            doc.text(`7. Tree Pose: Enhances focus and balance.`, 20, 390);
+
+            // Add watermark
+            doc.setFontSize(10);
+            doc.text('Generated by MindPal', 150, 290, { align: 'right' });
+
+            // Save PDF
+            doc.save('stress_assessment_report.pdf');
+        }
+    </script>
+</body>
+</html>
